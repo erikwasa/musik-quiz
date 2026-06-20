@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Musikquiz debug</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>Debug</h1>
+      <p>Kontrollerar låtbiblioteket.</p>
+    </header>
+
+    <section class="screen active">
+      <div class="card">
+        <h2>Validering</h2>
+        <div id="summary" class="debug-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Detaljer</h2>
+        <div id="details" class="debug-list"></div>
+      </div>
+    </section>
+
+    <footer>
+      <a href="index.html">Tillbaka till quizet</a>
+    </footer>
+  </main>
+
+  <script src="data/decades.js"></script>
+  <script src="data/filmer.js"></script>
+  <script src="data/sommarhits.js"></script>
+  <script src="data/svensk-sommar.js"></script>
+
+  <script>
+    const categoriesByName = window.quizCategories || {};
+    const categoryEntries = Object.entries(categoriesByName);
+
+    const songs = categoryEntries.flatMap(([categoryName, categorySongs]) =>
+      categorySongs.map((song, index) => ({
+        ...song,
+        category: categoryName,
+        index: index + 1
+      }))
+    );
+
+    const summary = document.getElementById("summary");
+    const details = document.getElementById("details");
+
+    function hasValue(value) {
+      return value !== undefined && value !== null && String(value).trim() !== "";
+    }
+
+    function isValidSpotifyUrl(url) {
+      if (!hasValue(url)) {
+        return false;
+      }
+
+      try {
+        const parsedUrl = new URL(url);
+        return (
+          parsedUrl.hostname === "open.spotify.com" &&
+          parsedUrl.pathname.startsWith("/track/")
+        );
+      } catch {
+        return false;
+      }
+    }
+
+    function songLabel(song) {
+      return `${song.category} #${song.index}: ${song.artist || "Okänd artist"} – ${song.title || "Okänd titel"}`;
+    }
+
+    function duplicateKey(song) {
+      return [
+        String(song.artist || "").trim().toLowerCase(),
+        String(song.title || "").trim().toLowerCase()
+      ].join("|");
+    }
+
+    function addResult(target, type, message) {
+      const item = document.createElement("div");
+      item.className = `debug-item ${type}`;
+      item.textContent = message;
+      target.appendChild(item);
+    }
+
+    function addList(target, heading, items) {
+      if (items.length === 0) {
+        return;
+      }
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "debug-section";
+
+      const title = document.createElement("h3");
+      title.textContent = heading;
+      wrapper.appendChild(title);
+
+      const list = document.createElement("ul");
+
+      items.forEach(item => {
+        const listItem = document.createElement("li");
+        listItem.textContent = item;
+        list.appendChild(listItem);
+      });
+
+      wrapper.appendChild(list);
+      target.appendChild(wrapper);
+    }
+
+    const missingYear = songs.filter(song => !hasValue(song.year));
+    const missingArtist = songs.filter(song => !hasValue(song.artist));
+    const missingTitle = songs.filter(song => !hasValue(song.title));
+    const missingSpotifyUrl = songs.filter(song => !hasValue(song.spotifyUrl));
+    const invalidSpotifyUrl = songs.filter(song => hasValue(song.spotifyUrl) && !isValidSpotifyUrl(song.spotifyUrl));
+    const emptyCategories = categoryEntries.filter(([, categorySongs]) => categorySongs.length === 0);
+
+    const duplicatesByKey = songs.reduce((map, song) => {
+      const key = duplicateKey(song);
+
+      if (!hasValue(song.artist) || !hasValue(song.title)) {
+        return map;
+      }
+
+      map[key] = map[key] || [];
+      map[key].push(song);
+
+      return map;
+    }, {});
+
+    const duplicateGroups = Object.values(duplicatesByKey).filter(group => group.length > 1);
+
+    addResult(summary, "ok", `✅ ${songs.length} låtar laddade`);
+    addResult(summary, "ok", `✅ ${categoryEntries.length} kategorier laddade`);
+
+    addResult(
+      summary,
+      missingYear.length === 0 ? "ok" : "warning",
+      `${missingYear.length === 0 ? "✅" : "⚠️"} ${missingYear.length} låtar saknar år`
+    );
+
+    addResult(
+      summary,
+      missingArtist.length === 0 ? "ok" : "warning",
+      `${missingArtist.length === 0 ? "✅" : "⚠️"} ${missingArtist.length} låtar saknar artist`
+    );
+
+    addResult(
+      summary,
+      missingTitle.length === 0 ? "ok" : "warning",
+      `${missingTitle.length === 0 ? "✅" : "⚠️"} ${missingTitle.length} låtar saknar titel`
+    );
+
+    addResult(
+      summary,
+      missingSpotifyUrl.length === 0 ? "ok" : "warning",
+      `${missingSpotifyUrl.length === 0 ? "✅" : "⚠️"} ${missingSpotifyUrl.length} låtar saknar spotifyUrl`
+    );
+
+    addResult(
+      summary,
+      invalidSpotifyUrl.length === 0 ? "ok" : "warning",
+      `${invalidSpotifyUrl.length === 0 ? "✅" : "⚠️"} ${invalidSpotifyUrl.length} låtar har ogiltig Spotify-länk`
+    );
+
+    addResult(
+      summary,
+      duplicateGroups.length === 0 ? "ok" : "warning",
+      `${duplicateGroups.length === 0 ? "✅" : "⚠️"} ${duplicateGroups.length} dubbletter hittades`
+    );
+
+    addResult(
+      summary,
+      emptyCategories.length === 0 ? "ok" : "warning",
+      `${emptyCategories.length === 0 ? "✅" : "⚠️"} ${emptyCategories.length} kategorier saknar låtar`
+    );
+
+    addList(details, "Saknar år", missingYear.map(songLabel));
+    addList(details, "Saknar artist", missingArtist.map(songLabel));
+    addList(details, "Saknar titel", missingTitle.map(songLabel));
+    addList(details, "Saknar spotifyUrl", missingSpotifyUrl.map(songLabel));
+    addList(details, "Ogiltig Spotify-länk", invalidSpotifyUrl.map(song => `${songLabel(song)} — ${song.spotifyUrl}`));
+    addList(details, "Kategorier utan låtar", emptyCategories.map(([categoryName]) => categoryName));
+    addList(
+      details,
+      "Dubbletter",
+      duplicateGroups.map(group => group.map(songLabel).join(" / "))
+    );
+
+    if (details.children.length === 0) {
+      addResult(details, "ok", "✅ Inga problem hittades");
+    }
+  </script>
+</body>
+</html>
