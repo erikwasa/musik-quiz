@@ -403,5 +403,247 @@ window.songData = [
     artist: "Harry Styles",
     title: "As It Was",
     spotifyUrl: "https://open.spotify.com/track/4Dvkj6JhhA12EX05fT7y2e"
+  },
+[
+  {
+    "category": "Summer hits",
+    "year": 1944,
+    "summerHitYear": 1945,
+    "artist": "The Andrews Sisters",
+    "title": "Rum and Coca-Cola",
+    "spotifyUrl": "https://open.spotify.com/track/4UXFiYNHbTIfhT4r1fMruh"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1947,
+    "summerHitYear": 1947,
+    "artist": "Tex Williams",
+    "title": "Smoke! Smoke! Smoke! (That Cigarette)",
+    "spotifyUrl": "https://open.spotify.com/track/05HBDnASISMJN46VxzDafK"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1958,
+    "summerHitYear": 1958,
+    "artist": "Bobby Darin",
+    "title": "Splish Splash",
+    "spotifyUrl": "https://open.spotify.com/track/40fD7ct05FvQHLdQTgJelG"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1958,
+    "summerHitYear": 1958,
+    "artist": "Domenico Modugno",
+    "title": "Nel blu dipinto di blu (Volare)",
+    "spotifyUrl": "https://open.spotify.com/track/1deGaiuaHTt3mIlSL7fXoh"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1959,
+    "summerHitYear": 1959,
+    "artist": "Jerry Keller",
+    "title": "Here Comes Summer",
+    "spotifyUrl": "https://open.spotify.com/track/6xcJRINmg6leDcUxdOtDbz"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1960,
+    "summerHitYear": 1960,
+    "artist": "Brian Hyland",
+    "title": "Itsy Bitsy Teenie Weenie Yellow Polka Dot Bikini",
+    "spotifyUrl": "https://open.spotify.com/track/4aTCNddtjztjuK2EOgz7ZZ"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1963,
+    "summerHitYear": 1963,
+    "artist": "The Beach Boys",
+    "title": "Surfin' U.S.A.",
+    "spotifyUrl": "https://open.spotify.com/track/2EPr9Wx7e1cpGEbNAtuN7x"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1961,
+    "summerHitYear": 1963,
+    "artist": "Kyu Sakamoto",
+    "title": "Sukiyaki",
+    "spotifyUrl": "https://open.spotify.com/track/0EYKtEb2mKXxlnMD6aqYig"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1965,
+    "summerHitYear": 1965,
+    "artist": "Sam the Sham & The Pharaohs",
+    "title": "Wooly Bully",
+    "spotifyUrl": "https://open.spotify.com/track/4GNmvOYZW11lGzcZm0FKGY"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1966,
+    "summerHitYear": 1966,
+    "artist": "The Lovin' Spoonful",
+    "title": "Summer in the City",
+    "spotifyUrl": "https://open.spotify.com/track/7yso4IDOXI6yLI3n3VnQP4"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1966,
+    "summerHitYear": 1966,
+    "artist": "The Troggs",
+    "title": "Wild Thing",
+    "spotifyUrl": "https://open.spotify.com/track/7jGzYUZ2Bgg8BDfYlQRfn8"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1969,
+    "summerHitYear": 1969,
+    "artist": "The Archies",
+    "title": "Sugar, Sugar",
+    "spotifyUrl": "https://open.spotify.com/track/3iSws76HjaU7k49EqJVTfF"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1970,
+    "summerHitYear": 1970,
+    "artist": "Mungo Jerry",
+    "title": "In the Summertime",
+    "spotifyUrl": "https://open.spotify.com/track/2uzlv8PjqsVvF1DhEahyhy"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1972,
+    "summerHitYear": 1972,
+    "artist": "Hot Butter",
+    "title": "Popcorn",
+    "spotifyUrl": "https://open.spotify.com/track/45aoC0yE3RZGWz5QPb41M1"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1974,
+    "summerHitYear": 1974,
+    "artist": "Carl Douglas",
+    "title": "Kung Fu Fighting",
+    "spotifyUrl": "https://open.spotify.com/track/7K8QsHbmUpSX37oOCL4e2g"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1976,
+    "summerHitYear": 1976,
+    "artist": "Starland Vocal Band",
+    "title": "Afternoon Delight",
+    "spotifyUrl": "https://open.spotify.com/track/4lO4RpFOp7nDnqJvTXeVTN"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1979,
+    "summerHitYear": 1979,
+    "artist": "Anita Ward",
+    "title": "Ring My Bell",
+    "spotifyUrl": "https://open.spotify.com/track/7GK2KVYH8FrTC9zehmjVMd"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1979,
+    "summerHitYear": 1979,
+    "artist": "The Knack",
+    "title": "My Sharona",
+    "spotifyUrl": "https://open.spotify.com/track/1HOMkjp0nHMaTnfAkslCQj"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1980,
+    "summerHitYear": 1980,
+    "artist": "Lipps Inc.",
+    "title": "Funkytown",
+    "spotifyUrl": "https://open.spotify.com/track/2XVQdI3m0giGxNrwUhV3yP"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1982,
+    "summerHitYear": 1982,
+    "artist": "Survivor",
+    "title": "Eye of the Tiger",
+    "spotifyUrl": "https://open.spotify.com/track/2KH16WveTQWT6KOG9Rg6e2"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1983,
+    "summerHitYear": 1983,
+    "artist": "Irene Cara",
+    "title": "Flashdance... What a Feeling",
+    "spotifyUrl": "https://open.spotify.com/track/3cbV252akVZInSvJk7jAYX"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1985,
+    "summerHitYear": 1985,
+    "artist": "Katrina and the Waves",
+    "title": "Walking on Sunshine",
+    "spotifyUrl": "https://open.spotify.com/track/05wIrZSwuaVWhcv5FfqeH0"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1985,
+    "summerHitYear": 1985,
+    "artist": "Baltimora",
+    "title": "Tarzan Boy",
+    "spotifyUrl": "https://open.spotify.com/track/273uCXd7NPrInaiNqtkOrA"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1987,
+    "summerHitYear": 1987,
+    "artist": "Los Lobos",
+    "title": "La Bamba",
+    "spotifyUrl": "https://open.spotify.com/track/0uMMLry3hzWGn3q3loqMkm"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1989,
+    "summerHitYear": 1989,
+    "artist": "Kaoma",
+    "title": "Lambada",
+    "spotifyUrl": "https://open.spotify.com/track/6xepovPqjvrkEw9Y5AMmTm"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1990,
+    "summerHitYear": 1990,
+    "artist": "MC Hammer",
+    "title": "U Can't Touch This",
+    "spotifyUrl": "https://open.spotify.com/track/1B75hgRqe7A4fwee3g3Wmu"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1991,
+    "summerHitYear": 1991,
+    "artist": "DJ Jazzy Jeff & The Fresh Prince",
+    "title": "Summertime",
+    "spotifyUrl": "https://open.spotify.com/track/20XdEFyaUR9C7aDIdq2OAd"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1992,
+    "summerHitYear": 1992,
+    "artist": "Sir Mix-A-Lot",
+    "title": "Baby Got Back",
+    "spotifyUrl": "https://open.spotify.com/track/1SAkL1mYNJlaqnBQxVZrRl"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1997,
+    "summerHitYear": 1997,
+    "artist": "Hanson",
+    "title": "MMMBop",
+    "spotifyUrl": "https://open.spotify.com/track/0lnxrQAd9ZxbhBBe7d8FO8"
+  },
+  {
+    "category": "Summer hits",
+    "year": 1999,
+    "summerHitYear": 1999,
+    "artist": "Len",
+    "title": "Steal My Sunshine",
+    "spotifyUrl": "https://open.spotify.com/track/4agp6oHofabdUedr0B1krj"
   }
+]
 ];
