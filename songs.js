@@ -3,10 +3,25 @@
 
   Edit this file when you want to add, remove, or change songs.
 
+  Year rule for this quiz:
+  - Use the original single release year when the song was released as a single.
+  - If the song was not released as a single, use the first original public release year.
+  - Do not use Spotify album, compilation, remaster, deluxe edition, or re-release years unless that is the song's original public release.
+
   Notes:
   - category controls which category button the song appears under.
   - year is the quiz answer shown after pressing "Reveal answer".
   - spotifyUrl should be a Spotify track URL.
+
+  Copyable song template:
+
+  {
+    category: "Category name",
+    year: 2000,
+    artist: "Artist name",
+    title: "Song title",
+    spotifyUrl: "https://open.spotify.com/track/PASTE_TRACK_ID_HERE"
+  },
 */
 
 window.songData = [
@@ -40,7 +55,7 @@ window.songData = [
   },
   {
     category: "80s",
-    year: 1985,
+    year: 1984,
     artist: "a-ha",
     title: "Take on Me",
     spotifyUrl: "https://open.spotify.com/track/2WfaOiMkCvy7F5fcp2zZ8L"
