@@ -199,6 +199,19 @@
       margin: 0;
     }
 
+    .answer-meta {
+      margin: 14px 0 0;
+      padding-top: 12px;
+      border-top: 1px solid rgba(30, 215, 96, 0.25);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .answer-meta:empty {
+      display: none;
+    }
+
     .button-stack {
       display: grid;
       gap: 12px;
@@ -212,11 +225,6 @@
       color: var(--muted);
       font-size: 0.92rem;
       margin-top: 10px;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 30px 12px;
     }
 
     footer {
@@ -286,6 +294,7 @@
           <p id="answerYear" class="answer-year"></p>
           <p id="answerTitle" class="answer-title"></p>
           <p id="answerArtist" class="answer-artist"></p>
+          <p id="answerSummerHitYear" class="answer-meta"></p>
         </div>
 
         <div class="button-stack">
@@ -306,7 +315,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="songs.js"></script>
+  <script src="songs.js"></script>
 
   <script>
     const songs = Array.isArray(window.songData) ? window.songData : [];
@@ -324,6 +333,7 @@
     const answerYear = document.getElementById("answerYear");
     const answerTitle = document.getElementById("answerTitle");
     const answerArtist = document.getElementById("answerArtist");
+    const answerSummerHitYear = document.getElementById("answerSummerHitYear");
     const songCounter = document.getElementById("songCounter");
     const remainingCounter = document.getElementById("remainingCounter");
 
@@ -334,9 +344,9 @@
     let currentIndex = 0;
 
     function getCategories() {
-  const categories = [...new Set(songs.map(song => song.category))].sort();
-  return ["All songs", ...categories];
-}
+      const categories = [...new Set(songs.map(song => song.category))].sort();
+      return ["All songs", ...categories];
+    }
 
     function shuffle(array) {
       const copy = [...array];
@@ -361,8 +371,9 @@
 
       categories.forEach(category => {
         const count = category === "All songs"
-  ? songs.length
-  : songs.filter(song => song.category === category).length;
+          ? songs.length
+          : songs.filter(song => song.category === category).length;
+
         const button = document.createElement("button");
 
         button.className = "secondary";
@@ -376,8 +387,9 @@
     function startCategory(category) {
       selectedCategory = category;
       categorySongs = category === "All songs"
-  ? songs
-  : songs.filter(song => song.category === category);
+        ? songs
+        : songs.filter(song => song.category === category);
+
       shuffledSongs = shuffle(categorySongs);
       currentIndex = 0;
 
@@ -396,6 +408,7 @@
         answerYear.textContent = "";
         answerTitle.textContent = "";
         answerArtist.textContent = "";
+        answerSummerHitYear.textContent = "";
         return;
       }
 
@@ -411,6 +424,9 @@
       answerYear.textContent = currentSong.year;
       answerTitle.textContent = currentSong.title;
       answerArtist.textContent = currentSong.artist;
+      answerSummerHitYear.textContent = currentSong.summerHitYear
+        ? `Summer hit year: ${currentSong.summerHitYear}`
+        : "";
 
       renderQrCode(currentSong.spotifyUrl);
     }
