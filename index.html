@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Guess the Song Year</title>
+
+  <style>
+    :root {
+      --bg: #101114;
+      --panel: #1a1c22;
+      --panel-soft: #252832;
+      --text: #f4f4f5;
+      --muted: #b7bbc7;
+      --accent: #1ed760;
+      --accent-dark: #18b853;
+      --danger: #ff6b6b;
+      --border: #373b47;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #253044 0, transparent 34rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 9vw, 4rem);
+      line-height: 0.95;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.5rem;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    button,
+    a.button {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px 18px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+    }
+
+    button.primary,
+    a.primary {
+      background: var(--accent);
+      color: #07120b;
+    }
+
+    button.primary:active,
+    a.primary:active {
+      background: var(--accent-dark);
+    }
+
+    button.secondary,
+    a.secondary {
+      background: var(--panel-soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button.warning {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(255, 107, 107, 0.5);
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .card {
+      background: rgba(26, 28, 34, 0.94);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .category-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .small {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .qr-wrap {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 18px;
+      width: min(100%, 360px);
+      margin: 18px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #qrCode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #qrCode img,
+    #qrCode canvas {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      display: block;
+    }
+
+    .answer {
+      display: none;
+      background: #0f2117;
+      border: 1px solid rgba(30, 215, 96, 0.35);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .answer.visible {
+      display: block;
+    }
+
+    .answer-year {
+      font-size: 3rem;
+      font-weight: 950;
+      color: var(--accent);
+      line-height: 1;
+      margin: 0 0 12px;
+    }
+
+    .answer-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin: 0 0 4px;
+    }
+
+    .answer-artist {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .button-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 10px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 12px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 24px 0;
+    }
+
+    code {
+      background: var(--panel-soft);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>Guess the Song Year</h1>
+      <p>
+        Choose a category. One player scans the QR code and plays the song.
+        Everyone else guesses the year, artist, and title.
+      </p>
+    </header>
+
+    <section id="categoryScreen" class="screen active">
+      <div class="card">
+        <h2>Choose category</h2>
+        <p class="small">
+          The host keeps this screen open. Another player scans the QR code with their phone.
+        </p>
+        <div id="categoryList" class="category-grid"></div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div class="card">
+        <div class="pill" id="categoryPill">Category</div>
+
+        <h2>Scan and play</h2>
+        <p class="small">
+          Do not show the scanning phone to the group. Let everyone guess before revealing.
+        </p>
+
+        <div class="qr-wrap">
+          <div id="qrCode"></div>
+        </div>
+
+        <div class="status-row">
+          <span id="songCounter">Song 1 of 1</span>
+          <span id="remainingCounter">0 left</span>
+        </div>
+
+        <div class="button-stack">
+          <a id="openSpotifyButton" class="button secondary" href="#" target="_blank" rel="noopener">
+            Open in Spotify
+          </a>
+
+          <button id="revealButton" class="primary">
+            Reveal answer
+          </button>
+        </div>
+
+        <div id="answerBox" class="answer">
+          <p id="answerYear" class="answer-year"></p>
+          <p id="answerTitle" class="answer-title"></p>
+          <p id="answerArtist" class="answer-artist"></p>
+        </div>
+
+        <div class="button-stack">
+          <button id="nextButton" class="secondary">
+            Next song
+          </button>
+
+          <button id="backButton" class="warning">
+            Back to categories
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Built for QR-based party play.
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <script>
+    /*
+      Add or edit songs here.
+
+      Important:
+      - spotifyUrl should be a real Spotify track link.
+      - The QR code will open this URL.
+      - Use the original release year you want players to guess.
+      - You can reuse categories across many songs.
+
+      Example Spotify track URL format:
+      https://open.spotify.com/track/PASTE_TRACK_ID_HERE
+    */
+
+    const songs = [
+      {
+        category: "Demo songs",
+        year: 1984,
+        artist: "Artist name",
+        title: "Song title",
+        spotifyUrl: "https://open.spotify.com/"
+      },
+      {
+        category: "Demo songs",
+        year: 1999,
+        artist: "Another artist",
+        title: "Another song",
+        spotifyUrl: "https://open.spotify.com/"
+      },
+      {
+        category: "80s",
+        year: 1982,
+        artist: "Replace me",
+        title: "Replace me",
+        spotifyUrl: "https://open.spotify.com/"
+      },
+      {
+        category: "90s",
+        year: 1995,
+        artist: "Replace me",
+        title: "Replace me",
+        spotifyUrl: "https://open.spotify.com/"
+      }
+    ];
+
+    const categoryScreen = document.getElementById("categoryScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const categoryList = document.getElementById("categoryList");
+    const categoryPill = document.getElementById("categoryPill");
+    const qrCodeElement = document.getElementById("qrCode");
+    const openSpotifyButton = document.getElementById("openSpotifyButton");
+    const revealButton = document.getElementById("revealButton");
+    const nextButton = document.getElementById("nextButton");
+    const backButton = document.getElementById("backButton");
+    const answerBox = document.getElementById("answerBox");
+    const answerYear = document.getElementById("answerYear");
+    const answerTitle = document.getElementById("answerTitle");
+    const answerArtist = document.getElementById("answerArtist");
+    const songCounter = document.getElementById("songCounter");
+    const remainingCounter = document.getElementById("remainingCounter");
+
+    let selectedCategory = null;
+    let categorySongs = [];
+    let shuffledSongs = [];
+    let currentSong = null;
+    let currentIndex = 0;
+
+    function getCategories() {
+      return [...new Set(songs.map(song => song.category))].sort();
+    }
+
+    function shuffle(array) {
+      const copy = [...array];
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[randomIndex]] = [copy[randomIndex], copy[i]];
+      }
+
+      return copy;
+    }
+
+    function showScreen(screenName) {
+      categoryScreen.classList.toggle("active", screenName === "categories");
+      gameScreen.classList.toggle("active", screenName === "game");
+    }
+
+    function renderCategories() {
+      categoryList.innerHTML = "";
+
+      const categories = getCategories();
+
+      categories.forEach(category => {
+        const count = songs.filter(song => song.category === category).length;
+        const button = document.createElement("button");
+
+        button.className = "secondary";
+        button.textContent = `${category} (${count})`;
+        button.addEventListener("click", () => startCategory(category));
+
+        categoryList.appendChild(button);
+      });
+    }
+
+    function startCategory(category) {
+      selectedCategory = category;
+      categorySongs = songs.filter(song => song.category === category);
+      shuffledSongs = shuffle(categorySongs);
+      currentIndex = 0;
+
+      showScreen("game");
+      showCurrentSong();
+    }
+
+    function showCurrentSong() {
+      if (shuffledSongs.length === 0) {
+        qrCodeElement.innerHTML = "";
+        categoryPill.textContent = selectedCategory;
+        songCounter.textContent = "No songs";
+        remainingCounter.textContent = "0 left";
+        openSpotifyButton.href = "#";
+        answerBox.classList.remove("visible");
+        answerYear.textContent = "";
+        answerTitle.textContent = "";
+        answerArtist.textContent = "";
+        return;
+      }
+
+      currentSong = shuffledSongs[currentIndex];
+
+      categoryPill.textContent = selectedCategory;
+      songCounter.textContent = `Song ${currentIndex + 1} of ${shuffledSongs.length}`;
+      remainingCounter.textContent = `${shuffledSongs.length - currentIndex - 1} left`;
+
+      openSpotifyButton.href = currentSong.spotifyUrl;
+
+      answerBox.classList.remove("visible");
+      answerYear.textContent = currentSong.year;
+      answerTitle.textContent = currentSong.title;
+      answerArtist.textContent = currentSong.artist;
+
+      renderQrCode(currentSong.spotifyUrl);
+    }
+
+    function renderQrCode(url) {
+      qrCodeElement.innerHTML = "";
+
+      new QRCode(qrCodeElement, {
+        text: url,
+        width: 300,
+        height: 300,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function revealAnswer() {
+      answerBox.classList.add("visible");
+    }
+
+    function nextSong() {
+      if (shuffledSongs.length === 0) {
+        return;
+      }
+
+      currentIndex += 1;
+
+      if (currentIndex >= shuffledSongs.length) {
+        shuffledSongs = shuffle(categorySongs);
+        currentIndex = 0;
+      }
+
+      showCurrentSong();
+    }
+
+    function backToCategories() {
+      selectedCategory = null;
+      categorySongs = [];
+      shuffledSongs = [];
+      currentSong = null;
+      currentIndex = 0;
+
+      showScreen("categories");
+    }
+
+    revealButton.addEventListener("click", revealAnswer);
+    nextButton.addEventListener("click", nextSong);
+    backButton.addEventListener("click", backToCategories);
+
+    renderCategories();
+  </script>
+</body>
+</html>
