@@ -7,159 +7,252 @@ const songs = Object.entries(categoriesByName).flatMap(([categoryName, categoryS
   }))
 );
 
-    const categoryScreen = document.getElementById("categoryScreen");
-    const gameScreen = document.getElementById("gameScreen");
-    const categoryList = document.getElementById("categoryList");
-    const categoryPill = document.getElementById("categoryPill");
-    const qrCodeElement = document.getElementById("qrCode");
-    const openSpotifyButton = document.getElementById("openSpotifyButton");
-    const revealButton = document.getElementById("revealButton");
-    const nextButton = document.getElementById("nextButton");
-    const backButton = document.getElementById("backButton");
-    const answerBox = document.getElementById("answerBox");
-    const answerYear = document.getElementById("answerYear");
-    const answerTitle = document.getElementById("answerTitle");
-    const answerArtist = document.getElementById("answerArtist");
-    const answerSummerHitYear = document.getElementById("answerSummerHitYear");
-    const songCounter = document.getElementById("songCounter");
-    const remainingCounter = document.getElementById("remainingCounter");
+const ALL_SONGS_LABEL = "Alla låtar";
+const PLAYED_STORAGE_KEY = "musikQuizPlayedSongs";
+const HIDE_PLAYED_STORAGE_KEY = "musikQuizHidePlayed";
 
-    let selectedCategory = null;
-    let categorySongs = [];
-    let shuffledSongs = [];
-    let currentSong = null;
-    let currentIndex = 0;
+const categoryScreen = document.getElementById("categoryScreen");
+const gameScreen = document.getElementById("gameScreen");
+const categoryList = document.getElementById("categoryList");
+const categoryPill = document.getElementById("categoryPill");
+const qrCodeElement = document.getElementById("qrCode");
+const openSpotifyButton = document.getElementById("openSpotifyButton");
+const revealButton = document.getElementById("revealButton");
+const nextButton = document.getElementById("nextButton");
+const backButton = document.getElementById("backButton");
+const answerBox = document.getElementById("answerBox");
+const answerYear = document.getElementById("answerYear");
+const answerTitle = document.getElementById("answerTitle");
+const answerArtist = document.getElementById("answerArtist");
+const answerSummerHitYear = document.getElementById("answerSummerHitYear");
+const songCounter = document.getElementById("songCounter");
+const remainingCounter = document.getElementById("remainingCounter");
+const hidePlayedCheckbox = document.getElementById("hidePlayedCheckbox");
+const resetPlayedButton = document.getElementById("resetPlayedButton");
 
-    function getCategories() {
-      const categories = [...new Set(songs.map(song => song.category))].sort();
-      return ["All songs", ...categories];
+let selectedCategory = null;
+let categorySongs = [];
+let shuffledSongs = [];
+let currentSong = null;
+let currentIndex = 0;
+let playedSongIds = loadPlayedSongIds();
+
+hidePlayedCheckbox.checked = loadHidePlayedPreference();
+
+function getSongId(song) {
+  return song.spotifyUrl || `${song.category}|${song.artist}|${song.title}|${song.year}`;
+}
+
+function loadPlayedSongIds() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(PLAYED_STORAGE_KEY)) || []);
+  } catch {
+    return new Set();
+  }
+}
+
+function savePlayedSongIds() {
+  localStorage.setItem(PLAYED_STORAGE_KEY, JSON.stringify([...playedSongIds]));
+}
+
+function loadHidePlayedPreference() {
+  const savedValue = localStorage.getItem(HIDE_PLAYED_STORAGE_KEY);
+  return savedValue === null ? true : savedValue === "true";
+}
+
+function saveHidePlayedPreference() {
+  localStorage.setItem(HIDE_PLAYED_STORAGE_KEY, String(hidePlayedCheckbox.checked));
+}
+
+function markSongAsPlayed(song) {
+  playedSongIds.add(getSongId(song));
+  savePlayedSongIds();
+}
+
+function isSongPlayed(song) {
+  return playedSongIds.has(getSongId(song));
+}
+
+function getCategories() {
+  const categories = Object.keys(categoriesByName).sort();
+  return [ALL_SONGS_LABEL, ...categories];
+}
+
+function getSongsForCategory(category) {
+  return category === ALL_SONGS_LABEL
+    ? songs
+    : songs.filter(song => song.category === category);
+}
+
+function getPlayableSongs(category) {
+  const allCategorySongs = getSongsForCategory(category);
+
+  if (!hidePlayedCheckbox.checked) {
+    return allCategorySongs;
+  }
+
+  return allCategorySongs.filter(song => !isSongPlayed(song));
+}
+
+function shuffle(array) {
+  const copy = [...array];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[randomIndex]] = [copy[randomIndex], copy[i]];
+  }
+
+  return copy;
+}
+
+function showScreen(screenName) {
+  categoryScreen.classList.toggle("active", screenName === "categories");
+  gameScreen.classList.toggle("active", screenName === "game");
+}
+
+function renderCategories() {
+  categoryList.innerHTML = "";
+
+  getCategories().forEach(category => {
+    const categorySongs = getSongsForCategory(category);
+    const playedCount = categorySongs.filter(isSongPlayed).length;
+    const totalCount = categorySongs.length;
+    const availableCount = hidePlayedCheckbox.checked
+      ? totalCount - playedCount
+      : totalCount;
+
+    const button = document.createElement("button");
+    button.className = "secondary category-button";
+    button.disabled = availableCount === 0;
+
+    const title = document.createElement("span");
+    title.className = "category-title";
+    title.textContent = category;
+
+    const meta = document.createElement("span");
+    meta.className = "category-meta";
+    meta.textContent = `${totalCount} låtar · ${playedCount} spelade`;
+
+    if (hidePlayedCheckbox.checked) {
+      meta.textContent += ` · ${availableCount} kvar`;
     }
 
-    function shuffle(array) {
-      const copy = [...array];
+    button.appendChild(title);
+    button.appendChild(meta);
 
-      for (let i = copy.length - 1; i > 0; i--) {
-        const randomIndex = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[randomIndex]] = [copy[randomIndex], copy[i]];
-      }
+    button.addEventListener("click", () => startCategory(category));
 
-      return copy;
-    }
+    categoryList.appendChild(button);
+  });
+}
 
-    function showScreen(screenName) {
-      categoryScreen.classList.toggle("active", screenName === "categories");
-      gameScreen.classList.toggle("active", screenName === "game");
-    }
+function startCategory(category) {
+  selectedCategory = category;
+  categorySongs = getPlayableSongs(category);
+  shuffledSongs = shuffle(categorySongs);
+  currentIndex = 0;
 
-    function renderCategories() {
-      categoryList.innerHTML = "";
+  showScreen("game");
+  showCurrentSong();
+}
 
-      const categories = getCategories();
+function showCurrentSong() {
+  if (shuffledSongs.length === 0) {
+    qrCodeElement.innerHTML = "";
+    categoryPill.textContent = selectedCategory;
+    songCounter.textContent = "Inga låtar kvar";
+    remainingCounter.textContent = "0 kvar";
+    openSpotifyButton.href = "#";
+    answerBox.classList.remove("visible");
+    answerYear.textContent = "";
+    answerTitle.textContent = "";
+    answerArtist.textContent = "";
+    answerSummerHitYear.textContent = "";
+    return;
+  }
 
-      categories.forEach(category => {
-        const count = category === "All songs"
-          ? songs.length
-          : songs.filter(song => song.category === category).length;
+  currentSong = shuffledSongs[currentIndex];
+  markSongAsPlayed(currentSong);
 
-        const button = document.createElement("button");
+  categoryPill.textContent = selectedCategory;
+  songCounter.textContent = `Låt ${currentIndex + 1} av ${shuffledSongs.length}`;
+  remainingCounter.textContent = `${shuffledSongs.length - currentIndex - 1} kvar`;
 
-        button.className = "secondary";
-        button.textContent = `${category} (${count})`;
-        button.addEventListener("click", () => startCategory(category));
+  openSpotifyButton.href = currentSong.spotifyUrl;
 
-        categoryList.appendChild(button);
-      });
-    }
+  answerBox.classList.remove("visible");
+  answerYear.textContent = currentSong.year;
+  answerTitle.textContent = currentSong.title;
+  answerArtist.textContent = currentSong.artist;
+  answerSummerHitYear.textContent = currentSong.summerHitYear
+    ? `Sommarhit-år: ${currentSong.summerHitYear}`
+    : "";
 
-    function startCategory(category) {
-      selectedCategory = category;
-      categorySongs = category === "All songs"
-        ? songs
-        : songs.filter(song => song.category === category);
+  renderQrCode(currentSong.spotifyUrl);
+}
 
-      shuffledSongs = shuffle(categorySongs);
-      currentIndex = 0;
+function renderQrCode(url) {
+  qrCodeElement.innerHTML = "";
 
-      showScreen("game");
-      showCurrentSong();
-    }
+  new QRCode(qrCodeElement, {
+    text: url,
+    width: 300,
+    height: 300,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
 
-    function showCurrentSong() {
-      if (shuffledSongs.length === 0) {
-        qrCodeElement.innerHTML = "";
-        categoryPill.textContent = selectedCategory;
-        songCounter.textContent = "No songs";
-        remainingCounter.textContent = "0 left";
-        openSpotifyButton.href = "#";
-        answerBox.classList.remove("visible");
-        answerYear.textContent = "";
-        answerTitle.textContent = "";
-        answerArtist.textContent = "";
-        answerSummerHitYear.textContent = "";
-        return;
-      }
+function revealAnswer() {
+  answerBox.classList.add("visible");
+}
 
-      currentSong = shuffledSongs[currentIndex];
+function nextSong() {
+  if (shuffledSongs.length === 0) {
+    return;
+  }
 
-      categoryPill.textContent = selectedCategory;
-      songCounter.textContent = `Song ${currentIndex + 1} of ${shuffledSongs.length}`;
-      remainingCounter.textContent = `${shuffledSongs.length - currentIndex - 1} left`;
+  currentIndex += 1;
 
-      openSpotifyButton.href = currentSong.spotifyUrl;
+  if (currentIndex >= shuffledSongs.length) {
+    shuffledSongs = shuffle(getPlayableSongs(selectedCategory));
+    currentIndex = 0;
+  }
 
-      answerBox.classList.remove("visible");
-      answerYear.textContent = currentSong.year;
-      answerTitle.textContent = currentSong.title;
-      answerArtist.textContent = currentSong.artist;
-      answerSummerHitYear.textContent = currentSong.summerHitYear
-        ? `Summer hit year: ${currentSong.summerHitYear}`
-        : "";
+  showCurrentSong();
+}
 
-      renderQrCode(currentSong.spotifyUrl);
-    }
+function backToCategories() {
+  selectedCategory = null;
+  categorySongs = [];
+  shuffledSongs = [];
+  currentSong = null;
+  currentIndex = 0;
 
-    function renderQrCode(url) {
-      qrCodeElement.innerHTML = "";
+  renderCategories();
+  showScreen("categories");
+}
 
-      new QRCode(qrCodeElement, {
-        text: url,
-        width: 300,
-        height: 300,
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    }
+function resetPlayedSongs() {
+  const shouldReset = confirm("Vill du nollställa alla spelade låtar?");
 
-    function revealAnswer() {
-      answerBox.classList.add("visible");
-    }
+  if (!shouldReset) {
+    return;
+  }
 
-    function nextSong() {
-      if (shuffledSongs.length === 0) {
-        return;
-      }
+  playedSongIds = new Set();
+  savePlayedSongIds();
+  renderCategories();
+}
 
-      currentIndex += 1;
+revealButton.addEventListener("click", revealAnswer);
+nextButton.addEventListener("click", nextSong);
+backButton.addEventListener("click", backToCategories);
 
-      if (currentIndex >= shuffledSongs.length) {
-        shuffledSongs = shuffle(categorySongs);
-        currentIndex = 0;
-      }
+hidePlayedCheckbox.addEventListener("change", () => {
+  saveHidePlayedPreference();
+  renderCategories();
+});
 
-      showCurrentSong();
-    }
+resetPlayedButton.addEventListener("click", resetPlayedSongs);
 
-    function backToCategories() {
-      selectedCategory = null;
-      categorySongs = [];
-      shuffledSongs = [];
-      currentSong = null;
-      currentIndex = 0;
-
-      showScreen("categories");
-    }
-
-    revealButton.addEventListener("click", revealAnswer);
-    nextButton.addEventListener("click", nextSong);
-    backButton.addEventListener("click", backToCategories);
-
-    renderCategories();
+renderCategories();
