@@ -306,51 +306,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="songs.js"></script>
 
   <script>
-    /*
-      Add or edit songs here.
-
-      Important:
-      - spotifyUrl should be a real Spotify track link.
-      - The QR code will open this URL.
-      - Use the original release year you want players to guess.
-      - You can reuse categories across many songs.
-
-      Example Spotify track URL format:
-      https://open.spotify.com/track/PASTE_TRACK_ID_HERE
-    */
-
-    const songs = [
-      {
-        category: "Demo songs",
-        year: 1984,
-        artist: "Artist name",
-        title: "Song title",
-        spotifyUrl: "https://open.spotify.com/"
-      },
-      {
-        category: "Demo songs",
-        year: 1999,
-        artist: "Another artist",
-        title: "Another song",
-        spotifyUrl: "https://open.spotify.com/"
-      },
-      {
-        category: "80s",
-        year: 1982,
-        artist: "Replace me",
-        title: "Replace me",
-        spotifyUrl: "https://open.spotify.com/"
-      },
-      {
-        category: "90s",
-        year: 1995,
-        artist: "Replace me",
-        title: "Replace me",
-        spotifyUrl: "https://open.spotify.com/"
-      }
-    ];
+    const songs = Array.isArray(window.songData) ? window.songData : [];
 
     const categoryScreen = document.getElementById("categoryScreen");
     const gameScreen = document.getElementById("gameScreen");
@@ -375,8 +334,9 @@
     let currentIndex = 0;
 
     function getCategories() {
-      return [...new Set(songs.map(song => song.category))].sort();
-    }
+  const categories = [...new Set(songs.map(song => song.category))].sort();
+  return ["All songs", ...categories];
+}
 
     function shuffle(array) {
       const copy = [...array];
@@ -400,7 +360,9 @@
       const categories = getCategories();
 
       categories.forEach(category => {
-        const count = songs.filter(song => song.category === category).length;
+        const count = category === "All songs"
+  ? songs.length
+  : songs.filter(song => song.category === category).length;
         const button = document.createElement("button");
 
         button.className = "secondary";
@@ -413,7 +375,9 @@
 
     function startCategory(category) {
       selectedCategory = category;
-      categorySongs = songs.filter(song => song.category === category);
+      categorySongs = category === "All songs"
+  ? songs
+  : songs.filter(song => song.category === category);
       shuffledSongs = shuffle(categorySongs);
       currentIndex = 0;
 
