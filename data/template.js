@@ -10,6 +10,8 @@
 
   Optional Summer hits field:
   - summerHitYear is the year the song was especially played as a summer hit.
+  - movie title of a movie
+  - note optional extra information 
 
   Copyable song template:
 
@@ -21,6 +23,8 @@ window.quizCategories["category"] =   [
     summerHitYear: 2001, // Optional. Use only for Summer hits or similar categories.
     artist: "Artist name",
     title: "Song title",
+    movie: "",
+    note: "Optional extra clue or explanation",
     spotifyUrl: "https://open.spotify.com/track/PASTE_TRACK_ID_HERE"
   }
 ];
