@@ -1,3 +1,5 @@
+window.quizCategories = window.quizCategories || {};
+
  window.quizCategories["Svensk sommar"] = [
   {
     "category": "Svensk sommar",
