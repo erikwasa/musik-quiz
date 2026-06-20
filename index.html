@@ -1,40 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Guess the Song Year</title>
-<link rel="stylesheet" href="styles.css">
+  <title>Musikquiz</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
   <main>
     <header>
-      <h1>Guess the Song Year</h1>
+      <h1>Musikquiz</h1>
       <p>
-        Choose a category. One player scans the QR code and plays the song.
-        Everyone else guesses the year, artist, and title.
+        Välj en kategori. En spelare skannar QR-koden och spelar låten.
+        Resten gissar år, artist och titel.
       </p>
     </header>
 
     <section id="categoryScreen" class="screen active">
       <div class="card">
-        <h2>Choose category</h2>
+        <h2>Välj kategori</h2>
         <p class="small">
-          The host keeps this screen open. Another player scans the QR code with their phone.
+          Spelledaren kan använda minnet för spelade låtar för att undvika upprepningar under kvällen.
         </p>
+
+        <label class="toggle-row">
+          <input id="hidePlayedCheckbox" type="checkbox" checked>
+          Dölj redan spelade låtar
+        </label>
+
+        <button id="resetPlayedButton" class="warning">
+          Nollställ spelade låtar
+        </button>
+
         <div id="categoryList" class="category-grid"></div>
       </div>
     </section>
 
     <section id="gameScreen" class="screen">
       <div class="card">
-        <div class="pill" id="categoryPill">Category</div>
+        <div class="pill" id="categoryPill">Kategori</div>
 
-        <h2>Scan and play</h2>
+        <h2>Skanna och spela</h2>
         <p class="small">
-          Do not show the scanning phone to the group. Let everyone guess before revealing.
+          Visa inte telefonen som skannar för gruppen. Låt alla gissa innan svaret visas.
         </p>
 
         <div class="qr-wrap">
@@ -42,17 +52,17 @@
         </div>
 
         <div class="status-row">
-          <span id="songCounter">Song 1 of 1</span>
-          <span id="remainingCounter">0 left</span>
+          <span id="songCounter">Låt 1 av 1</span>
+          <span id="remainingCounter">0 kvar</span>
         </div>
 
         <div class="button-stack">
           <a id="openSpotifyButton" class="button secondary" href="#" target="_blank" rel="noopener">
-            Open in Spotify
+            Öppna i Spotify
           </a>
 
           <button id="revealButton" class="primary">
-            Reveal answer
+            Visa svar
           </button>
         </div>
 
@@ -65,22 +75,24 @@
 
         <div class="button-stack">
           <button id="nextButton" class="secondary">
-            Next song
+            Nästa låt
           </button>
 
           <button id="backButton" class="warning">
-            Back to categories
+            Tillbaka till kategorier
           </button>
         </div>
       </div>
     </section>
 
     <footer>
-      Built for QR-based party play.
+      Byggt för QR-baserat partyspel.
     </footer>
   </main>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="data/decades.js"></script>
+ <script src="data/eurovision.js"></script>
   <script src="data/filmer.js"></script>
   <script src="data/sommarhits.js"></script>
   <script src="data/svensk-sommar.js"></script>
