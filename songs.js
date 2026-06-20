@@ -13,12 +13,15 @@
 
   Copyable song template:
 
+window.quizCategories = window.quizCategories || {};
+
+window.quizCategories["category"] =   [
   {
-    category: "Category name",
     year: 2000,
     summerHitYear: 2001, // Optional. Use only for Summer hits or similar categories.
     artist: "Artist name",
     title: "Song title",
     spotifyUrl: "https://open.spotify.com/track/PASTE_TRACK_ID_HERE"
-  },
+  }
+];
 */
