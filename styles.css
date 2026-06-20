@@ -1,1 +1,232 @@
+    :root {
+      --bg: #101114;
+      --panel: #1a1c22;
+      --panel-soft: #252832;
+      --text: #f4f4f5;
+      --muted: #b7bbc7;
+      --accent: #1ed760;
+      --accent-dark: #18b853;
+      --danger: #ff6b6b;
+      --border: #373b47;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #253044 0, transparent 34rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 9vw, 4rem);
+      line-height: 0.95;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.5rem;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    button,
+    a.button {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px 18px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+    }
+
+    button.primary,
+    a.primary {
+      background: var(--accent);
+      color: #07120b;
+    }
+
+    button.primary:active,
+    a.primary:active {
+      background: var(--accent-dark);
+    }
+
+    button.secondary,
+    a.secondary {
+      background: var(--panel-soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button.warning {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(255, 107, 107, 0.5);
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .card {
+      background: rgba(26, 28, 34, 0.94);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .category-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .small {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .qr-wrap {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 18px;
+      width: min(100%, 360px);
+      margin: 18px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #qrCode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #qrCode img,
+    #qrCode canvas {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      display: block;
+    }
+
+    .answer {
+      display: none;
+      background: #0f2117;
+      border: 1px solid rgba(30, 215, 96, 0.35);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .answer.visible {
+      display: block;
+    }
+
+    .answer-year {
+      font-size: 3rem;
+      font-weight: 950;
+      color: var(--accent);
+      line-height: 1;
+      margin: 0 0 12px;
+    }
+
+    .answer-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin: 0 0 4px;
+    }
+
+    .answer-artist {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .answer-meta {
+      margin: 14px 0 0;
+      padding-top: 12px;
+      border-top: 1px solid rgba(30, 215, 96, 0.25);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .answer-meta:empty {
+      display: none;
+    }
+
+    .button-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 24px 0;
+    }
+
+    code {
+      background: var(--panel-soft);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
