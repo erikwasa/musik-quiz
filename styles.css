@@ -218,6 +218,42 @@
       margin-top: 10px;
     }
 
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 700;
+  margin: 16px 0;
+}
+
+.toggle-row input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+}
+
+.category-button {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.category-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.category-title {
+  font-size: 1.05rem;
+}
+
+.category-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
     footer {
       text-align: center;
       color: var(--muted);
