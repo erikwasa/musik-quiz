@@ -1,4 +1,11 @@
-   const songs = Array.isArray(window.songData) ? window.songData : [];
+const categoriesByName = window.quizCategories || {};
+
+const songs = Object.entries(categoriesByName).flatMap(([categoryName, categorySongs]) =>
+  categorySongs.map(song => ({
+    ...song,
+    category: categoryName
+  }))
+);
 
     const categoryScreen = document.getElementById("categoryScreen");
     const gameScreen = document.getElementById("gameScreen");
