@@ -8,6 +8,15 @@ const SPOTIFY_SCOPES = [
   "user-modify-playback-state"
 ];
 
+const SPOTIFY_ACCESS_TOKEN_KEY = "spotify_access_token";
+const SPOTIFY_REFRESH_TOKEN_KEY = "spotify_refresh_token";
+const SPOTIFY_TOKEN_EXPIRES_AT_KEY = "spotify_token_expires_at";
+const SPOTIFY_CODE_VERIFIER_KEY = "spotify_code_verifier";
+const SPOTIFY_AUTH_STATE_KEY = "spotify_auth_state";
+const SPOTIFY_STATUS_AFTER_REDIRECT_KEY = "spotify_status_after_redirect";
+
+let spotifyTokenRefreshPromise = null;
+
 function setSpotifyStatus(message, type = "info") {
   const statusElement = document.getElementById("spotifyStatus");
 
@@ -51,11 +60,68 @@ function randomString(length) {
   return values.reduce((acc, x) => acc + possible[x % possible.length], "");
 }
 
+function saveSpotifyTokenResponse(data) {
+  if (!data.access_token) {
+    return null;
+  }
+
+  const expiresInSeconds = Number(data.expires_in || 3600);
+
+  localStorage.setItem(SPOTIFY_ACCESS_TOKEN_KEY, data.access_token);
+
+  // 60 sekunders marginal så vi inte försöker spela med en token som strax går ut.
+  localStorage.setItem(
+    SPOTIFY_TOKEN_EXPIRES_AT_KEY,
+    String(Date.now() + Math.max(expiresInSeconds - 60, 60) * 1000)
+  );
+
+  // Spotify returnerar inte alltid en ny refresh_token vid refresh.
+  // Om den saknas ska vi behålla den gamla.
+  if (data.refresh_token) {
+    localStorage.setItem(SPOTIFY_REFRESH_TOKEN_KEY, data.refresh_token);
+  }
+
+  return data.access_token;
+}
+
+function clearSpotifySession() {
+  localStorage.removeItem(SPOTIFY_ACCESS_TOKEN_KEY);
+  localStorage.removeItem(SPOTIFY_REFRESH_TOKEN_KEY);
+  localStorage.removeItem(SPOTIFY_TOKEN_EXPIRES_AT_KEY);
+  localStorage.removeItem(SPOTIFY_CODE_VERIFIER_KEY);
+  localStorage.removeItem(SPOTIFY_AUTH_STATE_KEY);
+}
+
+function getSpotifyToken() {
+  const token = localStorage.getItem(SPOTIFY_ACCESS_TOKEN_KEY);
+  const expiresAt = Number(localStorage.getItem(SPOTIFY_TOKEN_EXPIRES_AT_KEY) || "0");
+
+  if (token && Date.now() < expiresAt) {
+    return token;
+  }
+
+  localStorage.removeItem(SPOTIFY_ACCESS_TOKEN_KEY);
+  localStorage.removeItem(SPOTIFY_TOKEN_EXPIRES_AT_KEY);
+
+  return null;
+}
+
+function getSpotifyRefreshToken() {
+  return localStorage.getItem(SPOTIFY_REFRESH_TOKEN_KEY);
+}
+
+function hasSpotifySession() {
+  return Boolean(getSpotifyToken() || getSpotifyRefreshToken());
+}
+
 async function spotifyLogin() {
   setSpotifyStatus("Skickar dig till Spotify för inloggning...", "warning");
 
   const verifier = randomString(64);
-  localStorage.setItem("spotify_code_verifier", verifier);
+  const state = randomString(24);
+
+  localStorage.setItem(SPOTIFY_CODE_VERIFIER_KEY, verifier);
+  localStorage.setItem(SPOTIFY_AUTH_STATE_KEY, state);
 
   const challenge = base64urlencode(await sha256(verifier));
 
@@ -65,7 +131,8 @@ async function spotifyLogin() {
     scope: SPOTIFY_SCOPES.join(" "),
     code_challenge_method: "S256",
     code_challenge: challenge,
-    redirect_uri: SPOTIFY_REDIRECT_URI
+    redirect_uri: SPOTIFY_REDIRECT_URI,
+    state
   });
 
   window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
@@ -75,6 +142,7 @@ async function handleSpotifyRedirect() {
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
   const error = params.get("error");
+  const returnedState = params.get("state");
 
   if (error) {
     setSpotifyStatus(`Spotify-inloggningen avbröts eller misslyckades: ${error}`, "error");
@@ -83,11 +151,11 @@ async function handleSpotifyRedirect() {
   }
 
   if (!code) {
-    const savedStatus = sessionStorage.getItem("spotify_status_after_redirect");
+    const savedStatus = sessionStorage.getItem(SPOTIFY_STATUS_AFTER_REDIRECT_KEY);
 
     if (savedStatus) {
       setSpotifyStatus(savedStatus, "success");
-      sessionStorage.removeItem("spotify_status_after_redirect");
+      sessionStorage.removeItem(SPOTIFY_STATUS_AFTER_REDIRECT_KEY);
       return true;
     }
 
@@ -96,10 +164,23 @@ async function handleSpotifyRedirect() {
       return true;
     }
 
+    if (getSpotifyRefreshToken()) {
+      setSpotifyStatus("Spotify-session finns sparad. Spelaren kan förnya inloggningen vid behov.", "success");
+      return true;
+    }
+
     return false;
   }
 
-  const verifier = localStorage.getItem("spotify_code_verifier");
+  const expectedState = localStorage.getItem(SPOTIFY_AUTH_STATE_KEY);
+
+  if (expectedState && returnedState !== expectedState) {
+    setSpotifyStatus("Spotify-inloggningen avbröts av säkerhetsskäl. Prova igen.", "error");
+    window.history.replaceState({}, document.title, SPOTIFY_REDIRECT_URI);
+    return false;
+  }
+
+  const verifier = localStorage.getItem(SPOTIFY_CODE_VERIFIER_KEY);
 
   if (!verifier) {
     setSpotifyStatus("Spotify-inloggningen kunde inte slutföras. Prova att logga in igen.", "error");
@@ -133,12 +214,13 @@ async function handleSpotifyRedirect() {
       return false;
     }
 
-    localStorage.setItem("spotify_access_token", data.access_token);
-    localStorage.setItem("spotify_token_expires_at", String(Date.now() + data.expires_in * 1000));
-    localStorage.removeItem("spotify_code_verifier");
+    saveSpotifyTokenResponse(data);
+
+    localStorage.removeItem(SPOTIFY_CODE_VERIFIER_KEY);
+    localStorage.removeItem(SPOTIFY_AUTH_STATE_KEY);
 
     sessionStorage.setItem(
-      "spotify_status_after_redirect",
+      SPOTIFY_STATUS_AFTER_REDIRECT_KEY,
       "Spotify är inloggat. Välj kategori och tryck Spela i denna telefon igen."
     );
 
@@ -152,22 +234,86 @@ async function handleSpotifyRedirect() {
   }
 }
 
-function getSpotifyToken() {
-  const token = localStorage.getItem("spotify_access_token");
-  const expiresAt = Number(localStorage.getItem("spotify_token_expires_at") || "0");
+async function refreshSpotifyToken() {
+  if (spotifyTokenRefreshPromise) {
+    return spotifyTokenRefreshPromise;
+  }
 
-  if (!token || Date.now() > expiresAt) {
-    localStorage.removeItem("spotify_access_token");
-    localStorage.removeItem("spotify_token_expires_at");
+  const refreshToken = getSpotifyRefreshToken();
+
+  if (!refreshToken) {
     return null;
   }
 
-  return token;
+  spotifyTokenRefreshPromise = (async () => {
+    setSpotifyStatus("Förnyar Spotify-inloggningen...", "warning");
+
+    const body = new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: SPOTIFY_CLIENT_ID
+    });
+
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data.error === "invalid_grant") {
+        clearSpotifySession();
+        setSpotifyStatus("Spotify-sessionen har gått ut. Logga in igen.", "warning");
+        return null;
+      }
+
+      const message = data.error_description || data.error || "Okänt Spotify-fel";
+      throw new Error(`Kunde inte förnya Spotify-inloggningen: ${message}`);
+    }
+
+    const newAccessToken = saveSpotifyTokenResponse(data);
+    setSpotifyStatus("Spotify-inloggningen är förnyad.", "success");
+
+    return newAccessToken;
+  })();
+
+  try {
+    return await spotifyTokenRefreshPromise;
+  } finally {
+    spotifyTokenRefreshPromise = null;
+  }
+}
+
+async function getValidSpotifyToken(options = {}) {
+  const { loginIfMissing = false } = options;
+
+  const token = getSpotifyToken();
+
+  if (token) {
+    return token;
+  }
+
+  const refreshToken = getSpotifyRefreshToken();
+
+  if (refreshToken) {
+    try {
+      return await refreshSpotifyToken();
+    } catch (error) {
+      setSpotifyStatus(error.message, "error");
+      return null;
+    }
+  }
+
+  if (loginIfMissing) {
+    await spotifyLogin();
+  }
+
+  return null;
 }
 
 function logoutSpotify() {
-  localStorage.removeItem("spotify_access_token");
-  localStorage.removeItem("spotify_token_expires_at");
-  localStorage.removeItem("spotify_code_verifier");
+  clearSpotifySession();
   setSpotifyStatus("Du är utloggad från Spotify.", "warning");
 }
