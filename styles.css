@@ -303,3 +303,26 @@ code {
 .debug-section li {
   margin-bottom: 8px;
 }
+
+.play-mode-options {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+
+.play-mode-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 800;
+}
+
+.play-mode-options input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
