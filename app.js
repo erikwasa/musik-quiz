@@ -1,10 +1,11 @@
 const categoriesByName = window.quizCategories || {};
 
-const songs = Object.entries(categoriesByName).flatMap(([categoryName, categorySongs]) =>
-  categorySongs.map(song => ({
-    ...song,
-    category: categoryName
-  }))
+const songs = Object.entries(categoriesByName).flatMap(
+  ([categoryName, categorySongs]) =>
+    categorySongs.map(song => ({
+      ...song,
+      category: categoryName,
+    }))
 );
 
 const PLAY_MODE_STORAGE_KEY = "musikQuizPlayMode";
@@ -33,6 +34,7 @@ function applyPlayMode() {
     input.checked = input.value === mode;
   });
 }
+
 playModeInputs.forEach(input => {
   input.addEventListener("change", () => {
     savePlayMode(input.value);
@@ -176,7 +178,6 @@ function renderCategories() {
 
     button.appendChild(title);
     button.appendChild(meta);
-
     button.addEventListener("click", () => startCategory(category));
 
     categoryList.appendChild(button);
@@ -199,27 +200,28 @@ function showCurrentSong() {
     categoryPill.textContent = selectedCategory;
     songCounter.textContent = "Inga låtar kvar";
     remainingCounter.textContent = "0 kvar";
-songChangedStatus.textContent = `Ny låt vald: ${currentIndex + 1}`;
-spotifyCountdown.textContent = "";
+    songChangedStatus.textContent = `Ny låt vald: ${currentIndex + 1}`;
+    spotifyCountdown.textContent = "";
     openSpotifyButton.href = "#";
     answerBox.classList.remove("visible");
     answerYear.textContent = "";
     answerTitle.textContent = "";
     answerArtist.textContent = "";
     answerSummerHitYear.textContent = "";
+
     return;
   }
 
   currentSong = shuffledSongs[currentIndex];
+
   markSongAsPlayed(currentSong);
 
   categoryPill.textContent = selectedCategory;
   songCounter.textContent = `Låt ${currentIndex + 1} av ${shuffledSongs.length}`;
   remainingCounter.textContent = `${shuffledSongs.length - currentIndex - 1} kvar`;
-
   openSpotifyButton.href = currentSong.spotifyUrl;
 
-applyPlayMode();
+  applyPlayMode();
 
   answerBox.classList.remove("visible");
   answerYear.textContent = currentSong.year;
@@ -239,7 +241,7 @@ function renderQrCode(url) {
     text: url,
     width: 300,
     height: 300,
-    correctLevel: QRCode.CorrectLevel.H
+    correctLevel: QRCode.CorrectLevel.H,
   });
 }
 
@@ -295,6 +297,7 @@ hidePlayedCheckbox.addEventListener("change", () => {
 });
 
 resetPlayedButton.addEventListener("click", resetPlayedSongs);
+
 handleSpotifyRedirect();
 
 spotifyLoginButton?.addEventListener("click", async () => {
@@ -303,6 +306,7 @@ spotifyLoginButton?.addEventListener("click", async () => {
 
 playInAppButton?.addEventListener("click", async () => {
   if (!currentSong) return;
+
   await playSpotifyTrackAfterCountdown(currentSong.spotifyUrl);
 });
 
@@ -311,5 +315,4 @@ pauseInAppButton?.addEventListener("click", async () => {
 });
 
 applyPlayMode();
-
 renderCategories();
