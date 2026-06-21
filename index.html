@@ -29,24 +29,26 @@
           <input id="hidePlayedCheckbox" type="checkbox" checked>
           Dölj redan spelade låtar
         </label>
-<div class="play-mode">
-  <p class="small">Välj hur låten ska spelas:</p>
 
-  <label>
-    <input type="radio" name="playMode" value="qr" checked>
-    QR-kod
-  </label>
+        <div class="play-mode-options">
+          <p class="small">Välj hur låten ska spelas:</p>
 
-  <label>
-    <input type="radio" name="playMode" value="same-device">
-    Spela i denna telefon
-  </label>
+          <label>
+            <input type="radio" name="playMode" value="qr" checked>
+            QR-kod
+          </label>
 
-  <label>
-    <input type="radio" name="playMode" value="spotify-link">
-    Öppna Spotify
-  </label>
-</div>
+          <label>
+            <input type="radio" name="playMode" value="same-device">
+            Spela i denna telefon
+          </label>
+
+          <label>
+            <input type="radio" name="playMode" value="spotify-link">
+            Öppna Spotify
+          </label>
+        </div>
+
         <button id="resetPlayedButton" class="warning">
           Nollställ spelade låtar
         </button>
@@ -64,51 +66,46 @@
           Visa inte telefonen som skannar för gruppen. Låt alla gissa innan svaret visas.
         </p>
 
- <div id="qrModeBlock" class="play-mode-block">
-<div class="status-row">
-  <span id="songCounter">Låt 1 av 1</span>
-  <span id="remainingCounter">0 kvar</span>
-</div>
+        <div class="status-row">
+          <span id="songCounter">Låt 1 av 1</span>
+          <span id="remainingCounter">0 kvar</span>
+        </div>
 
-<div id="songChangedStatus" class="small"></div>
+        <div id="songChangedStatus" class="small"></div>
 
-<div id="qrModeBlock" class="play-mode-block">
-  <div class="qr-wrap">
-    <div id="qrCode"></div>
-  </div>
-</div>
+        <div id="qrModeBlock" class="play-mode-block">
+          <div class="qr-wrap">
+            <div id="qrCode"></div>
+          </div>
+        </div>
 
-<div id="sameDeviceModeBlock" class="play-mode-block">
-  <button id="playInAppButton" class="primary">
-    Spela i denna telefon
-  </button>
+        <div id="sameDeviceModeBlock" class="play-mode-block">
+          <div class="button-stack">
+            <button id="playInAppButton" class="primary">
+              Spela i denna telefon
+            </button>
 
-  <button id="pauseInAppButton" class="secondary">
-    Pausa
-  </button>
+            <button id="pauseInAppButton" class="secondary">
+              Pausa
+            </button>
+          </div>
 
-  <div id="spotifyCountdown" class="small"></div>
-</div>
+          <div id="spotifyCountdown" class="small"></div>
+        </div>
 
-<div id="spotifyLinkModeBlock" class="play-mode-block">
-  <a id="openSpotifyButton" class="button secondary" href="#" target="_blank" rel="noopener">
-    Öppna i Spotify
-  </a>
-</div>
-
-<div class="button-stack">
-  <button id="revealButton" class="primary">
-    Visa svar
-  </button>
-</div>
-        <div id="answerBox" class="answer">
-          <p id="answerYear" class="answer-year"></p>
-          <p id="answerTitle" class="answer-title"></p>
-          <p id="answerArtist" class="answer-artist"></p>
-          <p id="answerSummerHitYear" class="answer-meta"></p>
+        <div id="spotifyLinkModeBlock" class="play-mode-block">
+          <div class="button-stack">
+            <a id="openSpotifyButton" class="button secondary" href="#" target="_blank" rel="noopener">
+              Öppna Spotify
+            </a>
+          </div>
         </div>
 
         <div class="button-stack">
+          <button id="revealButton" class="primary">
+            Visa svar
+          </button>
+
           <button id="nextButton" class="secondary">
             Nästa låt
           </button>
@@ -116,6 +113,13 @@
           <button id="backButton" class="warning">
             Tillbaka till kategorier
           </button>
+        </div>
+
+        <div id="answerBox" class="answer">
+          <p id="answerYear" class="answer-year"></p>
+          <p id="answerTitle" class="answer-title"></p>
+          <p id="answerArtist" class="answer-artist"></p>
+          <p id="answerSummerHitYear" class="answer-meta"></p>
         </div>
       </div>
     </section>
@@ -127,12 +131,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="data/decades.js"></script>
- <script src="data/eurovision.js"></script>
+  <script src="data/eurovision.js"></script>
   <script src="data/filmer.js"></script>
   <script src="data/sommarhits.js"></script>
   <script src="data/svensk-sommar.js"></script>
-<script src="spotify-auth.js"></script>
-<script src="spotify-player.js"></script>
+  <script src="spotify-auth.js"></script>
+  <script src="spotify-player.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
