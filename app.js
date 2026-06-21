@@ -51,9 +51,9 @@ async function prepareSameDevicePlayback() {
   const isReady = await initSpotifyPlayer();
 
   if (isReady) {
-    if (spotifyPlayer?.activateElement) {
-      await spotifyPlayer.activateElement();
-    }
+    if (typeof activateSpotifyPlayer === "function") {
+  await activateSpotifyPlayer();
+}
 
     if (typeof setSpotifyStatus === "function") {
       setSpotifyStatus("Spotify-spelaren är redo. Tryck Spela i denna telefon när låten ska starta.", "success");
@@ -356,6 +356,6 @@ pauseInAppButton?.addEventListener("click", async () => {
 applyPlayMode();
 renderCategories();
 
-if (getPlayMode() === "same-device" && getSpotifyToken()) {
+if (getPlayMode() === "same-device" && hasSpotifySession()) {
   prepareSameDevicePlayback();
 }
