@@ -29,7 +29,24 @@
           <input id="hidePlayedCheckbox" type="checkbox" checked>
           Dölj redan spelade låtar
         </label>
+<div class="play-mode">
+  <p class="small">Välj hur låten ska spelas:</p>
 
+  <label>
+    <input type="radio" name="playMode" value="qr" checked>
+    QR-kod
+  </label>
+
+  <label>
+    <input type="radio" name="playMode" value="same-device">
+    Spela i denna telefon
+  </label>
+
+  <label>
+    <input type="radio" name="playMode" value="spotify-link">
+    Öppna Spotify
+  </label>
+</div>
         <button id="resetPlayedButton" class="warning">
           Nollställ spelade låtar
         </button>
@@ -47,24 +64,13 @@
           Visa inte telefonen som skannar för gruppen. Låt alla gissa innan svaret visas.
         </p>
 
-        <div class="qr-wrap">
-          <div id="qrCode"></div>
-        </div>
+ <div id="qrModeBlock" class="play-mode-block">
+  <div class="qr-wrap">
+    <div id="qrCode"></div>
+  </div>
+</div>
 
-        <div class="status-row">
-          <span id="songCounter">Låt 1 av 1</span>
-          <span id="remainingCounter">0 kvar</span>
-        </div>
-
- <div class="button-stack">
-  <a id="openSpotifyButton" class="button secondary" href="#" target="_blank" rel="noopener">
-    Öppna i Spotify
-  </a>
-
-  <button id="spotifyLoginButton" class="secondary">
-    Logga in med Spotify
-  </button>
-
+<div id="sameDeviceModeBlock" class="play-mode-block">
   <button id="playInAppButton" class="primary">
     Spela i denna telefon
   </button>
@@ -74,7 +80,15 @@
   </button>
 
   <div id="spotifyCountdown" class="small"></div>
+</div>
 
+<div id="spotifyLinkModeBlock" class="play-mode-block">
+  <a id="openSpotifyButton" class="button secondary" href="#" target="_blank" rel="noopener">
+    Öppna i Spotify
+  </a>
+</div>
+
+<div class="button-stack">
   <button id="revealButton" class="primary">
     Visa svar
   </button>
