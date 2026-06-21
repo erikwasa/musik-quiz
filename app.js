@@ -66,6 +66,7 @@ const answerSummerHitYear = document.getElementById("answerSummerHitYear");
 const songCounter = document.getElementById("songCounter");
 const remainingCounter = document.getElementById("remainingCounter");
 const songChangedStatus = document.getElementById("songChangedStatus");
+const spotifyCountdown = document.getElementById("spotifyCountdown");
 const hidePlayedCheckbox = document.getElementById("hidePlayedCheckbox");
 const resetPlayedButton = document.getElementById("resetPlayedButton");
 
