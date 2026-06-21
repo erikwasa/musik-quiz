@@ -7,6 +7,40 @@ const songs = Object.entries(categoriesByName).flatMap(([categoryName, categoryS
   }))
 );
 
+const PLAY_MODE_STORAGE_KEY = "musikQuizPlayMode";
+
+const playModeInputs = document.querySelectorAll('input[name="playMode"]');
+const qrModeBlock = document.getElementById("qrModeBlock");
+const sameDeviceModeBlock = document.getElementById("sameDeviceModeBlock");
+const spotifyLinkModeBlock = document.getElementById("spotifyLinkModeBlock");
+
+function getPlayMode() {
+  return localStorage.getItem(PLAY_MODE_STORAGE_KEY) || "qr";
+}
+
+function savePlayMode(mode) {
+  localStorage.setItem(PLAY_MODE_STORAGE_KEY, mode);
+}
+
+function applyPlayMode() {
+  const mode = getPlayMode();
+
+  qrModeBlock.hidden = mode !== "qr";
+  sameDeviceModeBlock.hidden = mode !== "same-device";
+  spotifyLinkModeBlock.hidden = mode !== "spotify-link";
+
+  playModeInputs.forEach(input => {
+    input.checked = input.value === mode;
+  });
+}
+
+playModeInputs.forEach(input => {
+  input.addEventListener("change", () => {
+    savePlayMode(input.value);
+    applyPlayMode();
+  });
+});
+
 const ALL_SONGS_LABEL = "Alla låtar";
 const PLAYED_STORAGE_KEY = "musikQuizPlayedSongs";
 const HIDE_PLAYED_STORAGE_KEY = "musikQuizHidePlayed";
@@ -183,6 +217,8 @@ function showCurrentSong() {
 
   openSpotifyButton.href = currentSong.spotifyUrl;
 
+applyPlayMode();
+
   answerBox.classList.remove("visible");
   answerYear.textContent = currentSong.year;
   answerTitle.textContent = currentSong.title;
@@ -271,5 +307,7 @@ playInAppButton?.addEventListener("click", async () => {
 pauseInAppButton?.addEventListener("click", async () => {
   await pauseSpotifyTrack();
 });
+
+applyPlayMode();
 
 renderCategories();
