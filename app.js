@@ -25,15 +25,14 @@ function savePlayMode(mode) {
 function applyPlayMode() {
   const mode = getPlayMode();
 
-  qrModeBlock.hidden = mode !== "qr";
-  sameDeviceModeBlock.hidden = mode !== "same-device";
-  spotifyLinkModeBlock.hidden = mode !== "spotify-link";
+  if (qrModeBlock) qrModeBlock.hidden = mode !== "qr";
+  if (sameDeviceModeBlock) sameDeviceModeBlock.hidden = mode !== "same-device";
+  if (spotifyLinkModeBlock) spotifyLinkModeBlock.hidden = mode !== "spotify-link";
 
   playModeInputs.forEach(input => {
     input.checked = input.value === mode;
   });
 }
-
 playModeInputs.forEach(input => {
   input.addEventListener("change", () => {
     savePlayMode(input.value);
@@ -64,6 +63,7 @@ const answerArtist = document.getElementById("answerArtist");
 const answerSummerHitYear = document.getElementById("answerSummerHitYear");
 const songCounter = document.getElementById("songCounter");
 const remainingCounter = document.getElementById("remainingCounter");
+const songChangedStatus = document.getElementById("songChangedStatus");
 const hidePlayedCheckbox = document.getElementById("hidePlayedCheckbox");
 const resetPlayedButton = document.getElementById("resetPlayedButton");
 
@@ -199,6 +199,8 @@ function showCurrentSong() {
     categoryPill.textContent = selectedCategory;
     songCounter.textContent = "Inga låtar kvar";
     remainingCounter.textContent = "0 kvar";
+songChangedStatus.textContent = `Ny låt vald: ${currentIndex + 1}`;
+spotifyCountdown.textContent = "";
     openSpotifyButton.href = "#";
     answerBox.classList.remove("visible");
     answerYear.textContent = "";
