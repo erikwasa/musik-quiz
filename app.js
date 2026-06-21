@@ -17,6 +17,9 @@ const categoryList = document.getElementById("categoryList");
 const categoryPill = document.getElementById("categoryPill");
 const qrCodeElement = document.getElementById("qrCode");
 const openSpotifyButton = document.getElementById("openSpotifyButton");
+const spotifyLoginButton = document.getElementById("spotifyLoginButton");
+const playInAppButton = document.getElementById("playInAppButton");
+const pauseInAppButton = document.getElementById("pauseInAppButton");
 const revealButton = document.getElementById("revealButton");
 const nextButton = document.getElementById("nextButton");
 const backButton = document.getElementById("backButton");
@@ -254,5 +257,19 @@ hidePlayedCheckbox.addEventListener("change", () => {
 });
 
 resetPlayedButton.addEventListener("click", resetPlayedSongs);
+handleSpotifyRedirect();
+
+spotifyLoginButton?.addEventListener("click", async () => {
+  await spotifyLogin();
+});
+
+playInAppButton?.addEventListener("click", async () => {
+  if (!currentSong) return;
+  await playSpotifyTrackAfterCountdown(currentSong.spotifyUrl);
+});
+
+pauseInAppButton?.addEventListener("click", async () => {
+  await pauseSpotifyTrack();
+});
 
 renderCategories();
