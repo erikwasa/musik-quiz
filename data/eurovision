@@ -1,0 +1,319 @@
+window.quizCategories = window.quizCategories || {};
+
+window.quizCategories["eurovision"] =   [
+  {
+    "category": "Eurovision",
+    "year": 2012,
+    "artist": "Loreen",
+    "title": "Euphoria",
+    "country": "Sweden",
+    "note": "Winner; one of the defining modern Eurovision pop hits.",
+    "spotifyUrl": "https://open.spotify.com/track/2knr7ikPt4l7bk92qS4ZXW"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1974,
+    "artist": "ABBA",
+    "title": "Waterloo",
+    "country": "Sweden",
+    "note": "Winner; launched ABBA internationally.",
+    "spotifyUrl": "https://open.spotify.com/track/3Dy4REq8O09IlgiwuHQ3sk"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2021,
+    "artist": "Måneskin",
+    "title": "ZITTI E BUONI",
+    "country": "Italy",
+    "note": "Winner; helped propel Måneskin to global fame.",
+    "spotifyUrl": "https://open.spotify.com/track/776AftMmFFAWUIEAb3lHhw"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2009,
+    "artist": "Alexander Rybak",
+    "title": "Fairytale",
+    "country": "Norway",
+    "note": "Winner; set a then-record points total under the voting system used at the time.",
+    "spotifyUrl": "https://open.spotify.com/track/3MnAsEBBsEj86d03RgO4EM"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2019,
+    "artist": "Duncan Laurence",
+    "title": "Arcade",
+    "country": "Netherlands",
+    "note": "Winner; later became a TikTok-fueled streaming hit.",
+    "spotifyUrl": "https://open.spotify.com/track/1Xi84slp6FryDSCbzq4UCD"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2014,
+    "artist": "Conchita Wurst",
+    "title": "Rise Like A Phoenix",
+    "country": "Austria",
+    "note": "Winner; remembered for its Bond-theme style and Conchita's cultural impact.",
+    "spotifyUrl": "https://open.spotify.com/track/0fvafkeEoF6Y9gGLK3Wnu3"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2006,
+    "artist": "Lordi",
+    "title": "Hard Rock Hallelujah",
+    "country": "Finland",
+    "note": "Winner; Finland's first win and a rare hard-rock Eurovision victory.",
+    "spotifyUrl": "https://open.spotify.com/track/7sZTvm0Sx8umbyQViTE2Qc"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2023,
+    "artist": "Käärijä",
+    "title": "Cha Cha Cha",
+    "country": "Finland",
+    "note": "Runner-up overall but won the public televote.",
+    "spotifyUrl": "https://open.spotify.com/track/5RX8T3EoTuXcybAxe6oPAw"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2023,
+    "artist": "Loreen",
+    "title": "Tattoo",
+    "country": "Sweden",
+    "note": "Winner; made Loreen the first woman to win Eurovision twice.",
+    "spotifyUrl": "https://open.spotify.com/track/1DmW5Ep6ywYwxc2HMT5BG6"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2015,
+    "artist": "Måns Zelmerlöw",
+    "title": "Heroes",
+    "country": "Sweden",
+    "note": "Winner; famous for its projection-mapping stick-figure staging.",
+    "spotifyUrl": "https://open.spotify.com/track/4ciaNqHWA2IzHphZaVRzHI"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2013,
+    "artist": "Emmelie de Forest",
+    "title": "Only Teardrops",
+    "country": "Denmark",
+    "note": "Winner; opened with a distinctive tin-whistle hook.",
+    "spotifyUrl": "https://open.spotify.com/track/269y1Vw3O0C9uI3drXpfo9"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2010,
+    "artist": "Lena",
+    "title": "Satellite",
+    "country": "Germany",
+    "note": "Winner; Germany's first win as a unified country.",
+    "spotifyUrl": "https://open.spotify.com/track/2UjNsh4ipNrmog6wdS2JVv"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1958,
+    "artist": "Domenico Modugno",
+    "title": "Nel Blu Dipinto Di Blu",
+    "country": "Italy",
+    "note": "Better known as Volare; did not win Eurovision but became a global standard.",
+    "spotifyUrl": "https://open.spotify.com/track/5zyrEv4F3FaLECI8TOKpFM"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1965,
+    "artist": "France Gall",
+    "title": "Poupée de cire, poupée de son",
+    "country": "Luxembourg",
+    "note": "Winner; written by Serge Gainsbourg.",
+    "spotifyUrl": "https://open.spotify.com/track/59Sm73PvsDxk3fItCotXQL"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1976,
+    "artist": "Brotherhood of Man",
+    "title": "Save Your Kisses for Me",
+    "country": "United Kingdom",
+    "note": "Winner; one of Eurovision's biggest-selling singles.",
+    "spotifyUrl": "https://open.spotify.com/track/3e9MERYeiFjn4Mvmg0aqvQ"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1981,
+    "artist": "Bucks Fizz",
+    "title": "Making Your Mind Up",
+    "country": "United Kingdom",
+    "note": "Winner; remembered for the skirt-rip costume reveal.",
+    "spotifyUrl": "https://open.spotify.com/track/0Azn2vpP3Sbs8qAG8e1KUc"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1998,
+    "artist": "Dana International",
+    "title": "Diva",
+    "country": "Israel",
+    "note": "Winner; Dana International became Eurovision's first openly transgender winner.",
+    "spotifyUrl": "https://open.spotify.com/track/4xTKSi7m6jUb1qaOmXn3R6"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2004,
+    "artist": "Ruslana",
+    "title": "Wild Dances",
+    "country": "Ukraine",
+    "note": "Winner; combined pop with Hutsul-inspired folk elements.",
+    "spotifyUrl": "https://open.spotify.com/track/1Lav2Z3RKu71MJLIjQz4dQ"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2007,
+    "artist": "Verka Serduchka",
+    "title": "Dancing Lasha Tumbai",
+    "country": "Ukraine",
+    "note": "Runner-up; became a cult Eurovision anthem.",
+    "spotifyUrl": "https://open.spotify.com/track/3ve2mVR6BkXuNWfHVoA5yu"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2022,
+    "artist": "KALUSH, Kalush Orchestra",
+    "title": "Stefania (Kalush Orchestra)",
+    "country": "Ukraine",
+    "note": "Winner; received a huge public vote during Russia's full-scale invasion of Ukraine.",
+    "spotifyUrl": "https://open.spotify.com/track/2vHzOWRKYPLu8umRPIFuOq"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1995,
+    "artist": "Secret Garden",
+    "title": "Nocturne",
+    "country": "Norway",
+    "note": "Winner; unusually instrumental-heavy with very little sung lyric.",
+    "spotifyUrl": "https://open.spotify.com/track/6bk11TH82XrT5QUC1gDw9A"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1997,
+    "artist": "Katrina & The Waves",
+    "title": "Love Shine a Light",
+    "country": "United Kingdom",
+    "note": "Winner; one of the United Kingdom's most emphatic Eurovision wins.",
+    "spotifyUrl": "https://open.spotify.com/track/7jxGRU3EH0QveYx4bD32i7"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2022,
+    "artist": "Rosa Linn",
+    "title": "SNAP",
+    "country": "Armenia",
+    "note": "Finished 20th but became one of the biggest post-contest streaming hits.",
+    "spotifyUrl": "https://open.spotify.com/track/5hx7w26Zi3zafMgvMTUqF6"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2018,
+    "artist": "Netta",
+    "title": "Toy",
+    "country": "Israel",
+    "note": "Winner; known for looping effects and chicken-cluck vocal hooks.",
+    "spotifyUrl": "https://open.spotify.com/track/6VO6JrvcuGMfPOQgT6kSGE"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2017,
+    "artist": "Salvador Sobral",
+    "title": "Amar Pelos Dois",
+    "country": "Portugal",
+    "note": "Winner; gave Portugal its first Eurovision victory.",
+    "spotifyUrl": "https://open.spotify.com/track/1bLjhPvRT5uNnVby1ytmXi"
+  },
+  {
+    "category": "Eurovision",
+    "year": 2018,
+    "artist": "Eleni Foureira",
+    "title": "Fuego",
+    "country": "Cyprus",
+    "note": "Runner-up; often cited as one of the most iconic non-winning entries.",
+    "spotifyUrl": "https://open.spotify.com/track/4TwWOcvjY1qt3QJvtveAGm"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1996,
+    "artist": "Gina G.",
+    "title": "Ooh Ahh... Just A Little Bit",
+    "country": "United Kingdom",
+    "note": "Finished 8th but became a major international dance-pop hit.",
+    "spotifyUrl": "https://open.spotify.com/track/1pLPmB2kxIHqOmkThL7AK2"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1980,
+    "artist": "Johnny Logan",
+    "title": "What's Another Year",
+    "country": "Ireland",
+    "note": "Winner; the first of Johnny Logan's Eurovision wins.",
+    "spotifyUrl": "https://open.spotify.com/track/51hipIpHYmj2Qh2tyQ32h6"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1987,
+    "artist": "Johnny Logan",
+    "title": "Hold Me Now",
+    "country": "Ireland",
+    "note": "Winner; made Logan the first performer to win Eurovision twice.",
+    "spotifyUrl": "https://open.spotify.com/track/7KG1uA3O9cqahhVt5atWnB"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1982,
+    "artist": "Nicole",
+    "title": "Ein bisschen Frieden",
+    "country": "Germany",
+    "note": "Winner; Germany's first Eurovision victory.",
+    "spotifyUrl": "https://open.spotify.com/track/0M981FlYgwGQxcb2BNLDKu"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1964,
+    "artist": "Gigliola Cinquetti",
+    "title": "Non ho l'età",
+    "country": "Italy",
+    "note": "Winner; Cinquetti was only 16 at the time.",
+    "spotifyUrl": "https://open.spotify.com/track/17b57ajmH4aAF9B5BRAdWE"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1985,
+    "artist": "Bobbysocks",
+    "title": "La Det Swinge",
+    "country": "Norway",
+    "note": "Winner; Norway's first Eurovision victory.",
+    "spotifyUrl": "https://open.spotify.com/track/3IgpWvgCqZjqhsiKwzw1Q7"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1969,
+    "artist": "Lulu",
+    "title": "Boom Bang a Bang",
+    "country": "United Kingdom",
+    "note": "Winner; one of four songs tied for first place in 1969.",
+    "spotifyUrl": "https://open.spotify.com/track/0vaRIQTdMIEnXjhWlVS95p"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1968,
+    "artist": "Cliff Richard",
+    "title": "Congratulations",
+    "country": "United Kingdom",
+    "note": "Runner-up; became one of the best-known Eurovision near-winners.",
+    "spotifyUrl": "https://open.spotify.com/track/1ZfbMOw5VSh5Qqr8hgLCkJ"
+  },
+  {
+    "category": "Eurovision",
+    "year": 1970,
+    "artist": "Dana",
+    "title": "All Kinds of Everything",
+    "country": "Ireland",
+    "note": "Winner; Ireland's first Eurovision victory.",
+    "spotifyUrl": "https://open.spotify.com/track/3SJPRPwpF0MTFKPrshBeKM"
+  }
+];
