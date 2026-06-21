@@ -35,10 +35,48 @@ function applyPlayMode() {
   });
 }
 
+async function prepareSameDevicePlayback() {
+  if (typeof setSpotifyStatus === "function") {
+    setSpotifyStatus("Förbereder Spotify-spelaren...", "warning");
+  }
+
+  if (typeof initSpotifyPlayer !== "function") {
+    if (typeof setSpotifyStatus === "function") {
+      setSpotifyStatus("Spotify-spelaren kunde inte startas. Kontrollera att spotify-player.js är laddad.", "error");
+    }
+
+    return;
+  }
+
+  const isReady = await initSpotifyPlayer();
+
+  if (isReady) {
+    if (spotifyPlayer?.activateElement) {
+      await spotifyPlayer.activateElement();
+    }
+
+    if (typeof setSpotifyStatus === "function") {
+      setSpotifyStatus("Spotify-spelaren är redo. Tryck Spela i denna telefon när låten ska starta.", "success");
+    }
+  }
+}
+
 playModeInputs.forEach(input => {
-  input.addEventListener("change", () => {
+  input.addEventListener("change", async () => {
     savePlayMode(input.value);
     applyPlayMode();
+
+    if (input.value === "same-device") {
+      await prepareSameDevicePlayback();
+    }
+
+    if (input.value === "spotify-link" && typeof setSpotifyStatus === "function") {
+      setSpotifyStatus("Läget Öppna Spotify är valt. Låten öppnas i Spotify-appen eller webbläsaren.", "success");
+    }
+
+    if (input.value === "qr" && typeof setSpotifyStatus === "function") {
+      setSpotifyStatus("QR-läge är valt. Skanna QR-koden för att öppna låten.", "success");
+    }
   });
 });
 
@@ -317,3 +355,7 @@ pauseInAppButton?.addEventListener("click", async () => {
 
 applyPlayMode();
 renderCategories();
+
+if (getPlayMode() === "same-device" && getSpotifyToken()) {
+  prepareSameDevicePlayback();
+}
