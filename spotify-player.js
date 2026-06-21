@@ -44,7 +44,7 @@ function loadSpotifySdk() {
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.onerror = () => {
-      reject(new Error("Spotify SDK kunde inte laddas. Prova annan webbläsare eller stäng av innehållsblockerare."));
+      reject(new Error("Spotify SDK kunde inte laddas. Prova vanlig Chrome utan inkognito eller innehållsblockerare."));
     };
 
     document.body.appendChild(script);
@@ -59,11 +59,11 @@ function getSpotifyApiErrorMessage(status, data) {
   }
 
   if (status === 403) {
-    return "Spotify nekade uppspelning. Kontrollera att kontot har Spotify Premium och att enheten kan styras.";
+    return "Spotify nekade uppspelning. Kontrollera att kontot har Spotify Premium och att webbläsaren kan spela skyddat innehåll.";
   }
 
   if (status === 404) {
-    return "Spotify hittar ingen aktiv spelare. Öppna Spotify-appen en gång och prova igen.";
+    return "Spotify hittar ingen aktiv spelare. Prova att öppna Spotify-appen en gång, gå tillbaka hit och tryck igen.";
   }
 
   if (status === 429) {
@@ -73,8 +73,8 @@ function getSpotifyApiErrorMessage(status, data) {
   return spotifyMessage || `Spotify-fel ${status}`;
 }
 
-async function spotifyApi(path, options = {}) {
-  const token = getSpotifyToken();
+async function spotifyApi(path, options = {}, retryOnAuth = true) {
+  const token = await getValidSpotifyToken();
 
   if (!token) {
     throw new Error("Du är inte inloggad i Spotify.");
@@ -97,6 +97,17 @@ async function spotifyApi(path, options = {}) {
     data = null;
   }
 
+  if (response.status === 401 && retryOnAuth && getSpotifyRefreshToken()) {
+    localStorage.removeItem(SPOTIFY_ACCESS_TOKEN_KEY);
+    localStorage.removeItem(SPOTIFY_TOKEN_EXPIRES_AT_KEY);
+
+    const refreshedToken = await refreshSpotifyToken();
+
+    if (refreshedToken) {
+      return spotifyApi(path, options, false);
+    }
+  }
+
   if (!response.ok) {
     throw new Error(getSpotifyApiErrorMessage(response.status, data));
   }
@@ -104,17 +115,47 @@ async function spotifyApi(path, options = {}) {
   return data;
 }
 
+function resetSpotifyPlayer() {
+  try {
+    spotifyPlayer?.disconnect();
+  } catch {
+    // Ignore.
+  }
+
+  spotifyPlayer = null;
+  spotifyDeviceId = null;
+  spotifyReadyPromise = null;
+}
+
+async function activateSpotifyPlayer() {
+  if (spotifyPlayer?.activateElement) {
+    await spotifyPlayer.activateElement();
+  }
+}
+
 async function initSpotifyPlayer() {
-  const token = getSpotifyToken();
+  const token = await getValidSpotifyToken({ loginIfMissing: true });
 
   if (!token) {
-    setSpotifyStatus("Du behöver logga in i Spotify först.", "warning");
-    await spotifyLogin();
     return false;
   }
 
   if (spotifyPlayer && spotifyDeviceId) {
     return true;
+  }
+
+  if (spotifyPlayer && spotifyReadyPromise) {
+    try {
+      await withTimeout(
+        spotifyReadyPromise,
+        15000,
+        "Spotify-spelaren blev inte redo. Prova vanlig Chrome utan inkognito."
+      );
+
+      return Boolean(spotifyDeviceId);
+    } catch {
+      resetSpotifyPlayer();
+    }
   }
 
   setSpotifyStatus("Startar Spotify-spelaren...", "warning");
@@ -123,14 +164,25 @@ async function initSpotifyPlayer() {
     await withTimeout(
       loadSpotifySdk(),
       10000,
-      "Spotify SDK laddades inte. Prova Chrome, Safari, Edge eller Firefox utan innehållsblockerare."
+      "Spotify SDK laddades inte. Prova vanlig Chrome utan inkognito eller innehållsblockerare."
     );
 
     spotifyReadyPromise = new Promise((resolve, reject) => {
       spotifyPlayer = new Spotify.Player({
         name: "Musik Quiz Player",
-        getOAuthToken: cb => cb(getSpotifyToken()),
-        volume: 0.8
+        volume: 0.8,
+
+        // Viktigt: hämta alltid färsk token.
+        // SDK:n kan anropa detta igen när access token har gått ut.
+        getOAuthToken: async cb => {
+          const freshToken = await getValidSpotifyToken();
+
+          if (freshToken) {
+            cb(freshToken);
+          } else {
+            cb("");
+          }
+        }
       });
 
       spotifyPlayer.addListener("ready", ({ device_id }) => {
@@ -144,17 +196,17 @@ async function initSpotifyPlayer() {
           spotifyDeviceId = null;
         }
 
-        setSpotifyStatus("Spotify-spelaren tappade anslutningen. Prova igen.", "warning");
+        setSpotifyStatus("Spotify-spelaren tappade anslutningen. Tryck Spela i denna telefon igen.", "warning");
       });
 
       spotifyPlayer.addListener("initialization_error", ({ message }) => {
-        reject(new Error(`Spotify kunde inte startas: ${message}`));
+        reject(new Error(`Spotify kunde inte startas i den här webbläsaren: ${message}`));
       });
 
       spotifyPlayer.addListener("authentication_error", ({ message }) => {
-        localStorage.removeItem("spotify_access_token");
-        localStorage.removeItem("spotify_token_expires_at");
-        reject(new Error(`Spotify-inloggningen har gått ut: ${message}`));
+        localStorage.removeItem(SPOTIFY_ACCESS_TOKEN_KEY);
+        localStorage.removeItem(SPOTIFY_TOKEN_EXPIRES_AT_KEY);
+        reject(new Error(`Spotify-inloggningen kunde inte användas: ${message}`));
       });
 
       spotifyPlayer.addListener("account_error", ({ message }) => {
@@ -166,7 +218,7 @@ async function initSpotifyPlayer() {
       });
 
       spotifyPlayer.addListener("autoplay_failed", () => {
-        setSpotifyStatus("Spotify blockerade automatisk uppspelning. Tryck på Spela i denna telefon igen.", "warning");
+        setSpotifyStatus("Spotify blockerade automatisk uppspelning. Tryck Spela i denna telefon igen.", "warning");
       });
     });
 
@@ -179,22 +231,21 @@ async function initSpotifyPlayer() {
     await withTimeout(
       spotifyReadyPromise,
       15000,
-      "Spotify-spelaren blev inte redo. Prova att öppna Spotify-appen en gång och försök igen."
+      "Spotify-spelaren blev inte redo. Prova vanlig Chrome utan inkognito."
     );
 
     return Boolean(spotifyDeviceId);
   } catch (error) {
+    resetSpotifyPlayer();
     setSpotifyStatus(error.message, "error");
     return false;
   }
 }
 
 async function playSpotifyTrackAfterCountdown(spotifyUrl) {
-  const token = getSpotifyToken();
+  const token = await getValidSpotifyToken({ loginIfMissing: true });
 
   if (!token) {
-    setSpotifyStatus("Du är inte inloggad i Spotify. Du skickas till Spotify-inloggningen nu.", "warning");
-    await spotifyLogin();
     return;
   }
 
@@ -211,13 +262,11 @@ async function playSpotifyTrackAfterCountdown(spotifyUrl) {
     const isReady = await initSpotifyPlayer();
 
     if (!isReady || !spotifyDeviceId) {
-      setSpotifyStatus("Spotify-spelaren är inte redo än. Prova att trycka igen.", "warning");
+      setSpotifyStatus("Spotify-spelaren är inte redo än. Tryck Spela i denna telefon igen.", "warning");
       return;
     }
 
-    if (spotifyPlayer?.activateElement) {
-      await spotifyPlayer.activateElement();
-    }
+    await activateSpotifyPlayer();
 
     setSpotifyStatus("Ansluter uppspelning till denna telefon...", "warning");
 
@@ -232,12 +281,17 @@ async function playSpotifyTrackAfterCountdown(spotifyUrl) {
     await wait(600);
 
     for (let i = 3; i > 0; i--) {
-      if (countdown) countdown.textContent = `Spelar om ${i}...`;
+      if (countdown) {
+        countdown.textContent = `Spelar om ${i}...`;
+      }
+
       setSpotifyStatus(`Spotify är redo. Spelar om ${i}...`, "warning");
       await wait(1000);
     }
 
-    if (countdown) countdown.textContent = "Spelar";
+    if (countdown) {
+      countdown.textContent = "Spelar";
+    }
 
     await spotifyApi(`/me/player/play?device_id=${encodeURIComponent(spotifyDeviceId)}`, {
       method: "PUT",
@@ -249,14 +303,17 @@ async function playSpotifyTrackAfterCountdown(spotifyUrl) {
 
     setSpotifyStatus("Spelar i denna telefon.", "success");
   } catch (error) {
-    if (countdown) countdown.textContent = "";
+    if (countdown) {
+      countdown.textContent = "";
+    }
+
     setSpotifyStatus(error.message, "error");
   }
 }
 
 async function pauseSpotifyTrack() {
   try {
-    const token = getSpotifyToken();
+    const token = await getValidSpotifyToken({ loginIfMissing: false });
 
     if (!token) {
       setSpotifyStatus("Du är inte inloggad i Spotify.", "warning");
